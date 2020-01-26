@@ -1,0 +1,5 @@
+org\selflearning\msa\products\entities\Product.class
+org\selflearning\msa\products\controllers\ProductsController.class
+org\selflearning\msa\products\services\ProductsDetailService.class
+org\selflearning\msa\products\ProductsApplication.class
+org\selflearning\msa\products\services\impl\DefaultProductsDetailService.class

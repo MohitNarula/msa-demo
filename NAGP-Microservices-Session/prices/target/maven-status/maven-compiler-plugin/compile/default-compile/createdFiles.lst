@@ -1,0 +1,5 @@
+org\selflearning\msa\prices\controller\PriceController.class
+org\selflearning\msa\prices\dtos\ProductData.class
+org\selflearning\msa\prices\services\PriceCalculationService.class
+org\selflearning\msa\prices\PricesApplication.class
+org\selflearning\msa\prices\services\impl\DefaultPriceCalculationService.class

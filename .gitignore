@@ -1,12 +1,18 @@
 *.class
 
+**/*.class
+
 # Package Files #
 *.jar*
 *.war
 *.ear
 
+**/target/**
 
 **/eclipsebin
 
 **/eclipsebin/
 
+.metadata/**
+
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.ide.prefs

@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.annotation.Resource;
 
+import org.selflearning.msa.products.dtos.ProductPriceRequest;
 import org.selflearning.msa.products.entities.Product;
 import org.selflearning.msa.products.services.ProductsDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,18 +34,21 @@ public class DefaultProductsDetailService implements ProductsDetailService {
 		return new RestTemplate();
 	}
 	
-	
 	public Product getProductByDesignNumber(String designNumber){
 		
 		Optional<Product> resultproduct=getAllProducts().stream().filter(p ->designNumber.equals(p.getDesignNumber())).findFirst();
 		if(resultproduct.isPresent()) {
 			
 			
-			String baseUrl = loadBalancerClient.choose("prices").getUri().toString() + "/products/test";
+			String baseUrl = loadBalancerClient.choose("prices").getUri().toString() + "/price";
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<Double> response = null;
+			ProductPriceRequest ppr=new ProductPriceRequest();
+			ppr.setGoldPurity(resultproduct.get().getGoldPurity());
+			ppr.setGoldWeight(resultproduct.get().getGoldWeight());
+			ppr.setPearlsWeight(resultproduct.get().getPearlsWeight());
 			try {
-				response = restTemplate.exchange(baseUrl, HttpMethod.GET,new HttpEntity<>(resultproduct.get()), Double.class);
+				response = restTemplate.exchange(baseUrl, HttpMethod.GET,new HttpEntity<ProductPriceRequest>(ppr), Double.class);
 			} catch (Exception ex) {
 				System.out.println(ex);
 			}

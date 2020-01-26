@@ -16,3 +16,4 @@
 .metadata/**
 
 .metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.ide.prefs
+/.metadata/

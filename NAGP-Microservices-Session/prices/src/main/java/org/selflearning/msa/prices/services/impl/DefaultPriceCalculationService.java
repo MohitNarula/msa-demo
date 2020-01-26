@@ -1,6 +1,5 @@
 package org.selflearning.msa.prices.services.impl;
 
-import org.selflearning.msa.prices.dtos.ProductData;
 import org.selflearning.msa.prices.services.PriceCalculationService;
 import org.springframework.stereotype.Service;
 
@@ -8,9 +7,9 @@ import org.springframework.stereotype.Service;
 public class DefaultPriceCalculationService implements PriceCalculationService {
 
 	@Override
-	public Double calculateProductPrice(ProductData productData) {
+	public Double calculateProductPrice(Double goldWeight, String goldPurity, Double pearlsWeight) {
 		// TODO Auto-generated method stub
-		return 20.0D;
+		return goldWeight*4000.0D+ pearlsWeight *500.0D;
 	}
 
 }

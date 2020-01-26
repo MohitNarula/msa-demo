@@ -6,22 +6,21 @@ import java.util.Optional;
 
 import javax.annotation.Resource;
 
-import org.selflearning.msa.products.dtos.ProductPriceRequest;
 import org.selflearning.msa.products.entities.Product;
 import org.selflearning.msa.products.services.ProductsDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class DefaultProductsDetailService implements ProductsDetailService {
-	
+
 	@Autowired
 	LoadBalancerClient loadBalancerClient;
 
@@ -33,36 +32,36 @@ public class DefaultProductsDetailService implements ProductsDetailService {
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
 	}
-	
-	public Product getProductByDesignNumber(String designNumber){
-		
-		Optional<Product> resultproduct=getAllProducts().stream().filter(p ->designNumber.equals(p.getDesignNumber())).findFirst();
-		if(resultproduct.isPresent()) {
-			
-			
+
+	public Product getProductByDesignNumber(String designNumber) {
+
+		Optional<Product> resultproduct = getAllProducts().stream()
+				.filter(p -> designNumber.equals(p.getDesignNumber())).findFirst();
+		if (resultproduct.isPresent()) {
+
 			String baseUrl = loadBalancerClient.choose("prices").getUri().toString() + "/price";
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<Double> response = null;
-			ProductPriceRequest ppr=new ProductPriceRequest();
-			ppr.setGoldPurity(resultproduct.get().getGoldPurity());
-			ppr.setGoldWeight(resultproduct.get().getGoldWeight());
-			ppr.setPearlsWeight(resultproduct.get().getPearlsWeight());
+
 			try {
-				response = restTemplate.exchange(baseUrl, HttpMethod.GET,new HttpEntity<ProductPriceRequest>(ppr), Double.class);
+				UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(baseUrl)
+						.queryParam("goldWeight", resultproduct.get().getGoldWeight())
+						.queryParam("goldPurity", resultproduct.get().getGoldPurity())
+						.queryParam("pearlsWeight", resultproduct.get().getPearlsWeight());
+				response = restTemplate.exchange(builder.buildAndExpand().toUri(), HttpMethod.GET, null,
+						Double.class);
 			} catch (Exception ex) {
 				System.out.println(ex);
 			}
-			System.out.println(response.getBody());
-			resultproduct.get().setPrice(response.getBody());
-			//resultproduct.get().setPrice(restTemplate.getForObject("http://products/products/test", Double.class));
 			
+			resultproduct.get().setPrice(response.getBody());
 			return resultproduct.get();
 		}
 		return null;
 	}
-	
-	protected List<Product> getAllProducts(){
-		List<Product> products= new ArrayList<>();
+
+	protected List<Product> getAllProducts() {
+		List<Product> products = new ArrayList<>();
 		products.add(new Product("001", "Men Ring", 7.08D, "22", 0.0D));
 		products.add(new Product("002", "Women Ring", 6.50D, "22", 0.0D));
 		products.add(new Product("003", "Men Chain", 17.06D, "22", 0.0D));
@@ -72,5 +71,5 @@ public class DefaultProductsDetailService implements ProductsDetailService {
 		products.add(new Product("007", "Women Necklace", 33.52D, "22", 12.40D));
 		return products;
 	}
-	
+
 }

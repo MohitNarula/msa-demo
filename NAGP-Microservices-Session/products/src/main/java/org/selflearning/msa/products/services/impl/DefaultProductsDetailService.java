@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.selflearning.msa.products.entities.Product;
 import org.selflearning.msa.products.services.ProductsDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class DefaultProductsDetailService implements ProductsDetailService {
 
+	@Value("${server.port}")
+	private int port;
+	
 	@Autowired
 	LoadBalancerClient loadBalancerClient;
 
@@ -55,6 +59,7 @@ public class DefaultProductsDetailService implements ProductsDetailService {
 			}
 			
 			resultproduct.get().setPrice(response.getBody());
+			resultproduct.get().setDescription(resultproduct.get().getDescription()+ " from product service port " + port +" price endpoint "+ baseUrl );
 			return resultproduct.get();
 		}
 		return null;

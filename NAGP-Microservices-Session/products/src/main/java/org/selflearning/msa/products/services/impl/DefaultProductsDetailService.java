@@ -43,7 +43,7 @@ public class DefaultProductsDetailService implements ProductsDetailService {
 				.filter(p -> designNumber.equals(p.getDesignNumber())).findFirst();
 		if (resultproduct.isPresent()) {
 
-			String baseUrl = loadBalancerClient.choose("prices").getUri().toString() + "/price";
+			String baseUrl = loadBalancerClient.choose("prices").getUri().toString() + "/prices";
 			RestTemplate restTemplate = new RestTemplate();
 			ResponseEntity<Double> response = null;
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/price")
+@RequestMapping(value = "/prices")
 public class PriceController {
 
 	@Value("${server.port}")
@@ -27,4 +27,13 @@ public class PriceController {
 		return priceCalculationService.calculateProductPrice(goldWeight, goldPurity, pearlsWeight);
 	}
 
+	@GetMapping(value = "gold")
+	Double getGoldPrice() {
+		return 4000.0D;
+	}
+	
+	@GetMapping(value = "pearl")
+	Double getPearlsPrice() {
+		return 500.0D;
+	}
 }

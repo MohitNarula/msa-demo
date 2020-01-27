@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+
 @Service
 public class DefaultProductsDetailService implements ProductsDetailService {
 
@@ -37,6 +39,7 @@ public class DefaultProductsDetailService implements ProductsDetailService {
 		return new RestTemplate();
 	}
 
+	@HystrixCommand(fallbackMethod = "getProductInfoWithoutPrice")
 	public Product getProductByDesignNumber(String designNumber) {
 
 		Optional<Product> resultproduct = getAllProducts().stream()
@@ -64,6 +67,16 @@ public class DefaultProductsDetailService implements ProductsDetailService {
 		}
 		return null;
 	}
+	
+	public Product getProductInfoWithoutPrice(String designNumber){
+		Optional<Product> resultproduct = getAllProducts().stream()
+				.filter(p -> designNumber.equals(p.getDesignNumber())).findFirst();
+		if (resultproduct.isPresent()) {
+			return resultproduct.get();
+		}
+		return null;
+	}
+	
 
 	protected List<Product> getAllProducts() {
 		List<Product> products = new ArrayList<>();

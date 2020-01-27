@@ -6,9 +6,7 @@ import org.selflearning.msa.products.entities.Product;
 import org.selflearning.msa.products.services.ProductsDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +18,7 @@ import com.netflix.discovery.EurekaClient;
 
 @RestController
 @RequestMapping(value = "/products")
+@EnableCircuitBreaker
 public class ProductsController {
 
 	@Autowired

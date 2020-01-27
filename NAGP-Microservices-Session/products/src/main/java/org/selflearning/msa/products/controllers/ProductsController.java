@@ -25,7 +25,7 @@ public class ProductsController {
 	@Autowired
 	private EurekaClient eurekaClient;
 
-	@Autowired
+	@Resource(name = "restTemp")
 	private RestTemplate restTemplate;
 
 	@Value("${server.port}")
@@ -47,11 +47,11 @@ public class ProductsController {
 				+ "&pearlsWeight=" + product.getPearlsWeight();
 		
 		InstanceInfo instance = eurekaClient.getNextServerFromEureka("prices", false);
-		double price = restTemplate.postForObject(instance.getHomePageUrl() + url, designNumber, Double.class);
+		double price = restTemplate.getForObject(instance.getHomePageUrl() + url, Double.class);
 		
 //		url = "http://prices" + url;
 //		ResponseEntity<Double> response = restTemplate.exchange(url, HttpMethod.GET, null, Double.class);
-//		price = response.getBody();
+//		double price = response.getBody();
 		
 		return price;
 	}
